@@ -1,0 +1,3 @@
+const fs = require('fs');
+
+// Simple test in JS (can test with python or node)

@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Carruthers Dashboard">
+  <title>Carruthers Family Dashboard</title>
+  
+  <!-- Warm Earth-Tone Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23C86D51'/><path d='M8 17L16 10L24 17V24H8V17Z' fill='%23FFFDF9'/><path d='M14 24V18H18V24H14Z' fill='%23C86D51'/></svg>">
+
+  <!-- Google Fonts: Outfit & Fraunces -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Core Stylesheet -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <div class="dashboard-wrapper">
+    <!-- Top Header Bar -->
+    <header class="dashboard-header">
+      <div class="header-left">
+        <div class="family-crest" title="Carruthers Family">C</div>
+        <div class="header-title-group">
+          <h1>Carruthers Family Dashboard</h1>
+          <div class="header-greeting" id="live-greeting">
+            <span>🏡</span> <span>Welcome, Carruthers Family</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-center">
+        <div class="clock-display">
+          <span id="live-time">12:00</span>
+          <span class="clock-period" id="live-period">PM</span>
+          <span class="clock-tz">CST</span>
+        </div>
+        <div class="date-display" id="live-date">Wednesday, September 2, 2026</div>
+      </div>
+
+      <div class="header-right">
+        <div class="status-pill" id="sync-status-pill" title="Click to sync with Google Sheets" style="cursor: pointer;">
+          <span class="status-dot" id="sync-status-dot"></span>
+          <span id="sync-status-text">Local Cache</span>
+        </div>
+        <button class="icon-btn" id="header-refresh-btn" title="Refresh calendars & weather" aria-label="Refresh Dashboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <polyline points="1 20 1 14 7 14"></polyline>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+          </svg>
+        </button>
+        <button class="icon-btn" id="header-settings-btn" title="Settings & Google integrations" aria-label="Settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Grid Content (Snapped to 4-column Grid) -->
+    <main class="dashboard-grid">
+      
+      <!-- Card 1: Today's Schedule (Row 1, Column 1) -->
+      <div class="dash-card card-schedule">
+        <div class="card-header">
+          <div class="card-title-group">
+            <div class="card-icon terracotta">📅</div>
+            <h2>Today's Schedule</h2>
+          </div>
+          <span class="card-badge" id="cal-count-badge">Loading...</span>
+        </div>
+
+        <!-- Calendar View Tabs -->
+        <div class="calendar-tabs">
+          <button class="cal-tab-btn active" id="cal-tab-today">Today</button>
+          <button class="cal-tab-btn" id="cal-tab-week">Next 7 Days</button>
+        </div>
+
+        <!-- Events Timeline Container -->
+        <div class="events-list-container" id="events-list-container">
+          <!-- Dynamically populated by calendar.js -->
+          <div style="text-align: center; padding: 24px; color: var(--text-muted);">
+            Loading Linden Meadows & Family events...
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2: Weekly Meal Planner (Row 1, Columns 2 & 3) -->
+      <div class="dash-card card-meals">
+        <div class="card-header">
+          <div class="card-title-group">
+            <div class="card-icon terracotta">🍲</div>
+            <h2>Weekly Meal Planner</h2>
+          </div>
+          <div class="card-header-actions">
+            <a href="https://docs.google.com/spreadsheets/d/18zTLMGamINNzKpLDZ8uLBKh9cnVI4n0H4zWfFHOWqVU/edit?usp=drive_link" target="_blank" rel="noopener noreferrer" class="card-badge" title="Open Google Sheet Recipes">
+              📊 Google Sheet
+            </a>
+          </div>
+        </div>
+
+        <!-- Weekly Days Grid (Mon-Sun) -->
+        <div class="meal-days-grid" id="meal-days-grid">
+          <!-- Dynamically populated by meals.js -->
+        </div>
+      </div>
+
+      <!-- Card 3: Winnipeg Weather Widget (Row 1, Column 4) -->
+      <div class="dash-card card-weather">
+        <div class="card-header">
+          <div class="card-title-group">
+            <div class="card-icon sandstone">☀️</div>
+            <h2>Winnipeg Weather</h2>
+          </div>
+          <span class="card-badge">Open-Meteo</span>
+        </div>
+
+        <!-- Current Weather Box -->
+        <div class="weather-current-box">
+          <div class="weather-temp-group">
+            <span class="weather-location">Winnipeg, MB</span>
+            <span class="weather-temp-main" id="weather-temp-main">--°C</span>
+            <span class="weather-condition-label" id="weather-condition-label">Loading weather...</span>
+          </div>
+          <div class="weather-icon-large" id="weather-icon-large">
+            <!-- Dynamic Weather SVG -->
+          </div>
+        </div>
+
+        <!-- Metrics Strip -->
+        <div class="weather-metrics-strip">
+          <div class="weather-metric-tile">
+            <span class="metric-label">Feels Like</span>
+            <span class="metric-val" id="metric-feels-like">--°C</span>
+          </div>
+          <div class="weather-metric-tile">
+            <span class="metric-label">Wind</span>
+            <span class="metric-val" id="metric-wind">-- km/h</span>
+          </div>
+          <div class="weather-metric-tile">
+            <span class="metric-label">Humidity</span>
+            <span class="metric-val" id="metric-humidity">--%</span>
+          </div>
+        </div>
+
+        <!-- 5-Day Forecast -->
+        <div class="weather-forecast-strip">
+          <div class="forecast-title">5-Day Outlook</div>
+          <div class="forecast-days-list" id="forecast-days-list">
+            <!-- Dynamically populated by weather.js -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4: General To-Do List (Row 2, Bottom 2 Left-Side Spots: Columns 1 & 2) -->
+      <div class="dash-card card-todo">
+        <div class="card-header">
+          <div class="card-title-group">
+            <div class="card-icon olive">📋</div>
+            <h2>General To-Do List</h2>
+          </div>
+          <div class="card-header-actions">
+            <span class="card-badge" id="todo-count-badge">0 pending</span>
+            <a href="https://docs.google.com/spreadsheets/d/1Q1fBDl4xjNHxFl4WVvP9oYj1yytrlkq1E1SUfsGzVkg/edit?usp=drive_link" target="_blank" rel="noopener noreferrer" class="card-badge" title="Open To-Do Google Sheet">
+              📊 Google Sheet
+            </a>
+          </div>
+        </div>
+
+        <!-- To-Do Actions Header -->
+        <div class="todo-header-actions">
+          <button class="btn-subtle" id="todo-clear-completed-btn">Clear Completed</button>
+          <button class="btn-subtle danger" id="todo-clear-all-btn">Clear All</button>
+        </div>
+
+        <!-- To-Do Input Row -->
+        <div class="todo-input-row">
+          <input type="text" class="todo-input" id="todo-new-input" placeholder="Add a task (e.g. Schedule dentist, tune bikes)..." autocomplete="off">
+          <select class="category-select" id="todo-cat-select">
+            <option value="General" selected>General</option>
+            <option value="Home">Home</option>
+            <option value="Errand">Errand</option>
+            <option value="Urgent">Urgent</option>
+          </select>
+          <button class="btn-primary" id="todo-add-btn">+ Add</button>
+        </div>
+
+        <!-- To-Do Items Scroll List -->
+        <div class="todo-list-scroll" id="todo-list-scroll">
+          <!-- Dynamically populated by todos.js -->
+        </div>
+      </div>
+
+      <!-- Card 5: Grocery Scratchpad (Row 2, Column 3) -->
+      <div class="dash-card card-groceries">
+        <div class="card-header">
+          <div class="card-title-group">
+            <div class="card-icon olive">🛒</div>
+            <h2>Grocery Scratchpad</h2>
+          </div>
+          <div class="card-header-actions">
+            <span class="card-badge" id="grocery-remaining-badge">0 needed</span>
+          </div>
+        </div>
+
+        <div class="todo-header-actions" style="margin-bottom: 0;">
+          <button class="btn-subtle" id="grocery-clear-completed-btn">Clear Checked</button>
+          <button class="btn-subtle danger" id="grocery-clear-all-btn">Clear All</button>
+        </div>
+
+        <!-- Grocery Input Row -->
+        <div class="grocery-input-row">
+          <input type="text" class="grocery-input" id="grocery-new-input" placeholder="Add grocery item (e.g. Milk, Apples)..." autocomplete="off">
+          <select class="category-select" id="grocery-cat-select">
+            <option value="Produce">Produce</option>
+            <option value="Bakery">Bakery</option>
+            <option value="Dairy">Dairy</option>
+            <option value="Meat">Meat</option>
+            <option value="Pantry" selected>Pantry</option>
+            <option value="Other">Other</option>
+          </select>
+          <button class="btn-primary" id="grocery-add-btn">+ Add</button>
+        </div>
+
+        <!-- Grocery Items List -->
+        <div class="grocery-list-scroll" id="grocery-list-scroll">
+          <!-- Dynamically populated by meals.js -->
+        </div>
+      </div>
+
+      <!-- Card 6: Polaroid Photo of the Day (Row 2, Column 4) -->
+      <div class="dash-card card-photo" style="align-items: center;">
+        <div class="card-header" style="width: 100%;">
+          <div class="card-title-group">
+            <div class="card-icon terracotta">📸</div>
+            <h2>Photo of the Day</h2>
+          </div>
+          <a href="https://drive.google.com/drive/folders/1f-T8J2NSoASwqeqrZXSY2ROAXJVIhtWy?usp=drive_link" target="_blank" rel="noopener noreferrer" class="card-badge" title="Open Google Drive Photo Folder">
+            📁 Drive Folder
+          </a>
+        </div>
+
+        <!-- Polaroid Container -->
+        <div class="polaroid-container">
+          <div class="polaroid-tape"></div>
+          <div class="polaroid-frame">
+            <div class="polaroid-image-box">
+              <img id="polaroid-img" class="polaroid-img" src="" alt="Family Memory">
+            </div>
+            <div class="polaroid-caption-row">
+              <span class="polaroid-caption" id="polaroid-caption">Autumn walks & golden leaves</span>
+              <span class="polaroid-date" id="polaroid-date">Carruthers Family</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Photo Actions -->
+        <div class="polaroid-actions">
+          <button class="btn-subtle" id="photo-next-btn">
+            🔄 Shuffle Photo
+          </button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Modal 1: Edit Day's Dinner -->
+  <div class="modal-overlay" id="meal-edit-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="meal-modal-title">Edit Dinner</h3>
+        <button class="modal-close-btn" id="meal-modal-close-btn">&times;</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="edit-meal-name">Meal / Dinner Name</label>
+        <input type="text" class="form-input" id="edit-meal-name" placeholder="e.g. Creamy Butternut Squash Pasta">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="edit-meal-link">Recipe URL or Google Sheet Reference</label>
+        <input type="url" class="form-input" id="edit-meal-link" placeholder="https://docs.google.com/spreadsheets/d/...">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="edit-meal-notes">Cooking Notes & Prep Reminders</label>
+        <input type="text" class="form-input" id="edit-meal-notes" placeholder="e.g. Thaw chicken in morning, roast squash at 400°F">
+      </div>
+      <div class="modal-footer">
+        <button class="btn-subtle" id="meal-modal-cancel-btn">Cancel</button>
+        <button class="btn-primary" id="meal-modal-save-btn">Save Dinner</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Settings & Google Integrations -->
+  <div class="modal-overlay" id="settings-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Dashboard Settings</h3>
+        <button class="modal-close-btn" id="settings-modal-close-btn">&times;</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="setting-gas-endpoint">Google Apps Script Web App URL</label>
+        <input type="url" class="form-input" id="setting-gas-endpoint" placeholder="https://script.google.com/macros/s/.../exec">
+        <span class="form-hint">Connects live read/write sync with your Google Sheet and Google Drive photos.</span>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="setting-drive-folder">Google Drive Folder ID</label>
+        <input type="text" class="form-input" id="setting-drive-folder" value="1f-T8J2NSoASwqeqrZXSY2ROAXJVIhtWy">
+        <span class="form-hint">ID of the shared photo folder for Photo of the Day.</span>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="setting-photo-interval">Photo Auto-Rotate Interval (Minutes)</label>
+        <input type="number" class="form-input" id="setting-photo-interval" value="240" min="5" max="1440">
+        <span class="form-hint">How often the polaroid photo automatically switches (e.g. 240 min = 4 hours).</span>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-subtle" id="settings-modal-cancel-btn">Cancel</button>
+        <button class="btn-primary" id="settings-modal-save-btn">Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/storage.js"></script>
+  <script src="js/clock.js"></script>
+  <script src="js/weather.js"></script>
+  <script src="js/real_calendars.js"></script>
+  <script src="js/calendar.js"></script>
+  <script src="js/meals.js"></script>
+  <script src="js/todos.js"></script>
+  <script src="js/photos.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
